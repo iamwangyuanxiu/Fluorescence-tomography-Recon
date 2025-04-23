@@ -68,6 +68,9 @@ if ~isfield(reconOpts,'solver');reconOpts.solver = 'RL';end
 if ~isfield(reconOpts,'upWeight');reconOpts.upWeight = 0.5;end
 %%%%%%
 
+%% For normalization, change this (Not from original Code)
+if ~isfield(reconOpts,'normalize');reconOpts.normalize = 1;end
+
 % .upSeq: updating sequence for projections from different angles
 % .CAIndex: index of centre projection in projs (1)
 [upSeq_def,CAInd_def] = defaultUpSeq(PSFParameters);

@@ -2,9 +2,9 @@
 
 clc; clear; close all; addpath(genpath('utils'));
 PSFs_Path = 'data//PSFs//default'; %Check if PSF exists before generating new PSF
-EI_path = 'data//sim_results//default//Bessel_0.2NA_0.7_annulus_reg0_1';%file path
+EI_path = 'data//images';%file path
 %data\sim_results\2pSAM_original_results\recon_fRL_zoom4ca512up1_-30-0.5-30_pupNO_en0_K0bias0_DAO1_EW0.5_mI30_mC0_frames1-13-13
-EI_name = 'recon_RL_zoom6ca128up1_-25-1-25_pupNO_en0_K0bias0_DAO1_EW0.5_mI10_mC0_frames1-13-13//Xguess_iter7.tif';
+EI_name = '3d_400um_to_500um_cropped_xp4um.tif';
 %EI_name = '3d_400um_to_500um_cropped_xp4um.tif';%file name
 %EI_name = 'balls.tif';%file name
 resultSave_path = ['results//generate_',datestr(now, 'YYYYmmDD_HHMMSS')];%Save results here
@@ -14,10 +14,12 @@ resultSave_path = ['results//generate_',datestr(now, 'YYYYmmDD_HHMMSS')];%Save r
 disp('Loading PSFs...');
 load([PSFs_Path,'//Bessel_0.2NA_0.7_annulus//PSF_mid_zoom6ca128up1psf128_-25-1-25_scanMode2_2-4-8_maxX8.5000Y8.5000biasX0.0Y0.0_pupNO_en0_K0bias0//PSFParameters.mat']);
 for i = 1:PSFParameters.angleNum
-    load([PSFs_Path,'//Bessel_0.2NA_0.7_annulus//PSF_mid_zoom6ca128up1psf128_-25-1-25_scanMode2_2-4-8_maxX8.5000Y8.5000biasX0.0Y0.0_pupNO_en0_K0bias0//psf_all_',num2str(i),'.mat'],'psf_thisAngle');
+    load([PSFs_Path,'//Bessel_0.2NA_0.7_annulus//PSF_mid_zoom6ca128up1psf128_-25-1-25_scanMode2_2-4-8_maxX8.5000Y8.5000biasX0.0Y0.0_pupNO_en0_K0bias0////psf_all_',num2str(i),'.mat'],'psf_thisAngle');
     psfs(:,:,:,i) = psf_thisAngle;
 end
 disp('PSFs loaded');
+
+
 
 % disp('Loading PSFs...');
 % load([PSFs_Path,'//25X//PSF_cx3cr1//PSFParameters.mat']);
@@ -34,8 +36,41 @@ disp('Loading raw data...');
 projs = single(loadtiff([EI_path,'//',EI_name]));
 [projr_r,projr_c,projr_num]=size(projs);
 
-projs = projs(:,:,1:psf_s);
+
+%% Clip or Pad to adjust image slice numbers
+if mod(projr_num, 2) == 0
+    projs = projs(:,:,1:projr_num - 1);
+    projr_num = projr_num - 1;
+end
+if projr_num > psf_s
+    difference = projr_num - psf_s;
+    clip = difference/2;
+    projs = projs(:,:,clip+1:projr_num-clip);
+end
+if projr_num < psf_s
+    difference = psf_s - projr_num;
+    pad = difference/2;
+    pad_zeros = zeros(projr_r, projr_c, pad);
+    projs = cat(3, pad_zeros, cat(3, projs, pad_zeros));
+end
 disp('Raw data loaded');
+
+
+%% Normalize PSF and data before calculation if norm flag set 1
+norm = 1;
+if norm
+    disp('Normalizing psfs and data...')
+    for psfCount=1:angleNum
+        cur_psf = psfs(:, :, :, psfCount);
+        psf_maximum = max(cur_psf,[],"all");
+        disp(['psf maximum ', num2str(psf_maximum)])
+        psfs(:, :, :, psfCount) = psfs(:, :, :, psfCount) ./ psf_maximum;
+    end
+    projs_maximum = max(projs,[],"all");
+    disp(['data maximum ', num2str(projs_maximum)])
+    projs = projs ./ projs_maximum;
+end
+
 
 [proj_r,proj_c,proj_num]=size(projs);
 

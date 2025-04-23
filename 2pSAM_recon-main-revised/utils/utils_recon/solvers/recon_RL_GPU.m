@@ -45,6 +45,19 @@ if (psf_r > proj_r) || (psf_c > proj_c); error('INPUT ERROR: projection should b
 %%%GPU
 Xguess=single(Xguess); %use single to speed up
 dispOn = reconOpts.dispOn;
+norm = reconOpts.normalize;
+
+%%%Normalize PSF and EI projections before calculation
+if norm
+    disp('Normalizing psfs...')
+    for psfCount=1:angleNum
+        cur_psf = psfs(:, :, :, psfCount);
+        psf_maximum = max(cur_psf,[],"all");
+        disp(['psf maximum ', num2str(psf_maximum)])
+        psfs(:, :, :, psfCount) = psfs(:, :, :, psfCount) ./ psf_maximum;
+    end
+end
+
 %%%psf_t i.e. the backward projection kernel in RL deconvolution
 if dispOn; disp('Calculating psf_t...'); end
 psf_t = zeros(psf_r,psf_c,psf_s,angleNum,'single');
@@ -73,8 +86,8 @@ shiftMap = 0;
 dispMap = 0;
 
 %% Regularization constants added
-reg_constant = 0.005; %0.0003; %0.00001 % regularization constant
-reg_constant1 = 0.99; % added small number in divide, can be changed
+reg_constant = 0; %0.0003; 0.00001 0.005 regularization constant
+reg_constant1 = 0.25; % added small number in divide, can be changed
 
 
 %%%DAO
@@ -156,6 +169,12 @@ for iterNow = 1:maxIter
         %%%finish
         clear errorBack;%To avoid out of GPU memory
         Xguess(isnan(Xguess)) = 0; Xguess = real(Xguess); Xguess(Xguess<0) = 0;
+        if norm
+            disp('Normalizing Xguess...')
+            Xguess_maximum = max(Xguess,[],"all");
+            disp(['Xguess maximum ', num2str(Xguess_maximum)])
+            Xguess = Xguess ./ Xguess_maximum;
+        end
         if dispOn
             disp(['Reconstructing volume... ',...
                 array2str(upAngles,'+'),'th ||| ', num2str(angleNum),' angle...',...

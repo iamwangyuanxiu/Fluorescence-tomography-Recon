@@ -56,7 +56,7 @@ if ~exist('reconOpts','var');reconOpts = struct;end
 
 %% For number of iterations, change this.
 % .maxIter: max iterations (10)
-if ~isfield(reconOpts,'maxIter');reconOpts.maxIter = 10;end
+if ~isfield(reconOpts,'maxIter');reconOpts.maxIter = 30;end
 %%%%%%
 
 %% RL uses Richardson-Lucy as indicated in paper, fRL uses Least Squares
@@ -67,6 +67,9 @@ if ~isfield(reconOpts,'solver');reconOpts.solver = 'RL';end
 % .upWeight: weight for volume update in each iteration (.5): 0-1
 if ~isfield(reconOpts,'upWeight');reconOpts.upWeight = 0.5;end
 %%%%%%
+
+%% For no, change this (Added later)
+if ~isfield(reconOpts,'padded');reconOpts.padded = 1;end
 
 % .upSeq: updating sequence for projections from different angles
 % .CAIndex: index of centre projection in projs (1)

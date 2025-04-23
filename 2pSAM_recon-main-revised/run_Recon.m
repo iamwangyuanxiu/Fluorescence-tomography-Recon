@@ -6,7 +6,7 @@
 %% clear and paths
 clc; clear; close all; addpath(genpath('utils'));
 PSFs_Path = 'data//PSFs//default'; %Check if PSF exists before generating new PSF
-EI_path = 'data//sim_data//default//Bessel_0.2NA_0.7_annulus_1';%file path
+EI_path = 'data//sim_data//default_normalized//Bessel_0.2NA_0.7_annulus';%file path
 EI_name = 'testing.tif';%file name
 resultSave_path = ['results//recon_',datestr(now, 'YYYYmmDD_HHMMSS')];%Save results here
 
@@ -14,7 +14,7 @@ resultSave_path = ['results//recon_',datestr(now, 'YYYYmmDD_HHMMSS')];%Save resu
 disp('Loading PSFs...');
 load([PSFs_Path,'//Bessel_0.2NA_0.7_annulus//PSF_mid_zoom6ca128up1psf128_-25-1-25_scanMode2_2-4-8_maxX8.5000Y8.5000biasX0.0Y0.0_pupNO_en0_K0bias0//PSFParameters.mat']);
 for i = 1:PSFParameters.angleNum
-    load([PSFs_Path,'//Bessel_0.2NA_0.7_annulus//PSF_mid_zoom6ca128up1psf128_-25-1-25_scanMode2_2-4-8_maxX8.5000Y8.5000biasX0.0Y0.0_pupNO_en0_K0bias0//psf_all_',num2str(i),'.mat'],'psf_thisAngle');
+    load([PSFs_Path,'//Bessel_0.2NA_0.7_annulus//PSF_mid_zoom6ca128up1psf128_-25-1-25_scanMode2_2-4-8_maxX8.5000Y8.5000biasX0.0Y0.0_pupNO_en0_K0bias0////psf_all_',num2str(i),'.mat'],'psf_thisAngle');
     psfs(:,:,:,i) = psf_thisAngle;
 end
 disp('PSFs loaded');

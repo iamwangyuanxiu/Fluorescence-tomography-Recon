@@ -6,11 +6,13 @@
 %     scale [J]. Cell, 2021, 184(12): 3318-3332 e3317.
 % 
 % ELi, 20230131, add comments
-function errorBack = backwardProj_fRL_GPU(largepsf,HXguessFFT,projNow)
+function errorBack = backwardProj_fRL_GPU(largepsf,HXguessFFT,projNow, Xguess, reg_constant)
 % INPUT
 %     largepsf   - psf but in the size of projection
 %     HXguessFFT - Fourier transform of HXguess, given by forwardProj_fRL_GPU.m
 %     projNow    - projection to be used
+
+
 
 %% size
 [proj_r,proj_c,psf_s] = size(largepsf);
@@ -55,7 +57,10 @@ projBackfft = fftForStack(projNowExpand).* FFT3PSFTranspose;clear projNowExpand 
 %     projBack = ifftForStack(projBackFFT);
 
 %% errorBack
-errorBack = (real(projBack./HXguessBack)); % Calculate Error Matric
+errorBack = (real(projBack./HXguessBack + reg_constant .* regulaTV(Xguess))); % Calculate Error Matric
+%% default is total variation, change to 2 norm or 1 norm regularizer.
+%errorBack = (real(projBack./HXguessBack + reg_constant .* Xguess)); 
+%errorBack = (real(projBack./HXguessBack + reg_constant));
 
 %% create largepsf again
 evalin('caller','largepsf = zeros(proj_r,proj_c,psf_s,"single");');

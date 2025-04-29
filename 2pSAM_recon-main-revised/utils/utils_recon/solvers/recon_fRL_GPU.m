@@ -55,6 +55,9 @@ matSaveOn = reconOpts.matSaveOn;
 dispOn = reconOpts.dispOn;
 shiftMap = 0;
 dispMap = 0;
+
+reg_constant = 0; %regularizer, fix type in backward_projector
+
 %%%DAO
 DAO = reconOpts.DAO;
 if DAO
@@ -120,7 +123,7 @@ for iterNow = 1:maxIter
             %%%forward and backward projection of fRL
             HXguessFFT = forwardProj_fRL_GPU(largepsf,Xguess);
             if ~exist('errorBack','var'); errorBack = zeros(proj_r,proj_c,psf_s,'single'); end
-            errorBack = backwardProj_fRL_GPU(largepsf,HXguessFFT,projNow) * 1/upAnglesNum + errorBack;
+            errorBack = backwardProj_fRL_GPU(largepsf,HXguessFFT,projNow,Xguess,reg_constant) * 1/upAnglesNum + errorBack;
         end
 
         %%%update Volume

@@ -61,7 +61,7 @@ if ~isfield(reconOpts,'maxIter');reconOpts.maxIter = 10;end
 
 %% RL uses Richardson-Lucy as indicated in paper, fRL uses Least Squares
 % .solver: reconstruction algorithm (fRL): fRL/RL
-if ~isfield(reconOpts,'solver');reconOpts.solver = 'RL';end
+if ~isfield(reconOpts,'solver');reconOpts.solver = 'fRL';end
 
 %% For updating stepSize in each iteration, change this
 % .upWeight: weight for volume update in each iteration (.5): 0-1
@@ -69,7 +69,7 @@ if ~isfield(reconOpts,'upWeight');reconOpts.upWeight = 0.5;end
 %%%%%%
 
 %% For normalization, change this (Not from original Code)
-if ~isfield(reconOpts,'normalize');reconOpts.normalize = 1;end
+if ~isfield(reconOpts,'normalize');reconOpts.normalize = 0;end
 
 % .upSeq: updating sequence for projections from different angles
 % .CAIndex: index of centre projection in projs (1)

@@ -121,8 +121,8 @@ else
         PSFParameters.angDistParameters.lowNA_rouNumber = 2;
         PSFParameters.angDistParameters.lowNA_thetaNumberMin = 4;
         PSFParameters.angDistParameters.lowNA_thetaNumberMax = 8;
-        PSFParameters.angDistParameters.Interval_X_Upper = 8.5; %4.2426
-        PSFParameters.angDistParameters.Interval_Y_Upper = 8.5; %6
+        PSFParameters.angDistParameters.Interval_X_Upper = 4.2426; 
+        PSFParameters.angDistParameters.Interval_Y_Upper = 6; 
         PSFParameters.angDistParameters.bias_X = 0;
         PSFParameters.angDistParameters.bias_Y = 0;
         angDist_path = [systemParameters_path,'//angleDistInPupil'];

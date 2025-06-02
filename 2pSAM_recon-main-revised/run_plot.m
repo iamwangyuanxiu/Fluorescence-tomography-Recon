@@ -8,15 +8,16 @@
 
 clc; clear; close all; addpath(genpath('utils'));
 %% Change this according to PSF saved position
-PSFs_Path = 'data//PSFs//default'; %Check if PSF exists before generating new PSF
+PSFs_Path = 'data/PSFs/default'; %Check if PSF exists before generating new PSF
 %%%%%%%
 PSFs_savePath = ['results//plots_',datestr(now, 'YYYYmmDD_HHMMSS')];%Save results here
+mkdir(PSFs_savePath)
 
 %% Change the load path according to PSF saved position
 disp('Loading PSFs...');
-load([PSFs_Path,'//Bessel_0.175NA_0.1_annulus//PSF_mid_zoom6ca128up1psf128_-25-1-25_scanMode2_2-4-8_maxX8.5000Y8.5000biasX0.0Y0.0_pupNO_en0_K0bias0//PSFParameters.mat']);
+load([PSFs_Path,'//2p_1.05NA//PSF_mid_zoom6ca128up1psf128_-25-1-25_scanMode2_2-4-8_maxX8.5000Y8.5000biasX0.0Y0.0_pupNO_en0_K0bias0//PSFParameters.mat']);
 for i = 1:PSFParameters.angleNum
-    load([PSFs_Path,'//Bessel_0.175NA_0.1_annulus//PSF_mid_zoom6ca128up1psf128_-25-1-25_scanMode2_2-4-8_maxX8.5000Y8.5000biasX0.0Y0.0_pupNO_en0_K0bias0//psf_all_',num2str(i),'.mat'],'psf_thisAngle');
+    load([PSFs_Path,'//2p_1.05NA//PSF_mid_zoom6ca128up1psf128_-25-1-25_scanMode2_2-4-8_maxX8.5000Y8.5000biasX0.0Y0.0_pupNO_en0_K0bias0//psf_all_',num2str(i),'.mat'],'psf_thisAngle');
     psfs(:,:,:,i) = psf_thisAngle;
 end
 disp('PSFs loaded');
@@ -36,90 +37,90 @@ FFTyz_total = zeros(zsizePixels, xysizePixels); % The preset FFTYZ summed figure
 FFTxy_total = zeros(xysizePixels, xysizePixels); % The preset FFTXY summed figure
 
 for N_beam=1:PSFParameters.angleNum
-    %%%%%%%%%%%
-   
-  %Save tif files, can comment out if don't want this
-  stackTempForSave = gather(squeeze(psfs(:,:,:, N_beam)));
-  saveastiff_overwrite(stackTempForSave, [PSFs_savePath, '/Beam',num2str(N_beam),'.tif'],0,1);
-  %%%%%%%%%
-  
-  %compute yz section
+%     %%%%%%%%%%%
+% 
+%   %Save tif files, can comment out if don't want this
+%   stackTempForSave = gather(squeeze(psfs(:,:,:, N_beam)));
+%   saveastiff_overwrite(stackTempForSave, [PSFs_savePath, '/Beam',num2str(N_beam),'.tif'],0,1);
+%   %%%%%%%%%
+% 
+%   %compute yz section
   yz = figure('name',['YZ-', num2str(N_beam)]);
-
-  %% Adjust this base on where the middle section of PSF is, or can customize. EX: a 128*128 size is 64
+% 
+%   %% Adjust this base on where the middle section of PSF is, or can customize. EX: a 128*128 size is 64
   X_section = 64;%middle, 1---128
   %%%%%%%%
 
   imageSctionYZ = (squeeze(psfs(:,X_section,:,N_beam)) + squeeze(psfs(:,X_section+1,:,N_beam)))/2;
   imageSctionYZshow = flip(imageSctionYZ',2);
   displaySectionDataByImage(imageSctionYZshow,PSFParameters,'y','z','YZ Slice X=0', -7, 0);
-
-  %Save yz section, can comment out if don't want this
-  saveas(yz,[PSFs_savePath,'//yz', num2str(N_beam), '.fig']);
-  saveas(yz,[PSFs_savePath,'//yz', num2str(N_beam), '.jpg']);
-  %%%%%%%%%
+% 
+%   %Save yz section, can comment out if don't want this
+%   saveas(yz,[PSFs_savePath,'//yz', num2str(N_beam), '.fig']);
+%   saveas(yz,[PSFs_savePath,'//yz', num2str(N_beam), '.jpg']);
+%   %%%%%%%%%
   close(yz);
-
-  %Compute FFTYZ section
+% 
+%   %Compute FFTYZ section
   fftyz = figure('name',['FFTYZ-', num2str(N_beam)]);
   FFTimageSctionYZ = fftForImage(imageSctionYZ);
   FFTimageSctionYZshow = flip(FFTimageSctionYZ',2);
   FFTyz_total = FFTyz_total + abs(FFTimageSctionYZshow);
   displaySectionDataByImage(abs(FFTimageSctionYZshow),PSFParameters,'ky','kz','FFT YZ Slice Z=0', -4, 2);
-
-  %Save fftyz section, can comment out if don't want this
-  saveas(fftyz,[PSFs_savePath,'//fftyz', num2str(N_beam), '.fig']);
-  saveas(fftyz,[PSFs_savePath,'//fftyz', num2str(N_beam), '.jpg']);
-  %%%%%%%%%
+% 
+%   %Save fftyz section, can comment out if don't want this
+  % saveas(fftyz,[PSFs_savePath,'//fftyz', num2str(N_beam), '.fig']);
+  % saveas(fftyz,[PSFs_savePath,'//fftyz', num2str(N_beam), '.jpg']);
+%   %%%%%%%%%
   close(fftyz);
-
-
-  %Compute xy section
+% 
+% 
+%   %Compute xy section
   xy = figure('name',['XY-', num2str(N_beam)]);
-
-  %% Adjust this base on where the middle Z Layer of PSF is, or can customize. EX: a 51-depth Z would be 25
+% 
+%   %% Adjust this base on where the middle Z Layer of PSF is, or can customize. EX: a 51-depth Z would be 25
   z_section = 25;% middle,1--129
   %%%%%%%%
 
   imageSctionXY = squeeze(psfs(:,:,z_section,N_beam));
   displaySectionDataByImage(imageSctionXY,PSFParameters,'x','y','XY Slice Z=0', -11, -6.5);
-
-  %Save xy section, can comment out if don't want this
-  saveas(xy,[PSFs_savePath,'//xy', num2str(N_beam), '.fig']);
-  saveas(xy,[PSFs_savePath,'//xy', num2str(N_beam), '.jpg']);
-  %%%%%%%%
+% 
+%   %Save xy section, can comment out if don't want this
+%   saveas(xy,[PSFs_savePath,'//xy', num2str(N_beam), '.fig']);
+%   saveas(xy,[PSFs_savePath,'//xy', num2str(N_beam), '.jpg']);
+%   %%%%%%%%
   close(xy)
-
+% 
   %Compute FFTXY
   fftxy = figure('name',['FFTXY-', num2str(N_beam)]);
   FFTimageSctionXY = fftForImage(imageSctionXY);
   FFTxy_total = FFTxy_total + abs(FFTimageSctionXY);
   displaySectionDataByImage(abs(FFTimageSctionXY),PSFParameters,'kx','ky','FFT XY Slice Z=0', -4, 0);
-  
-  %Save FFTXY section, can comment out if don't want this
-  saveas(fftxy,[PSFs_savePath,'//fftxy', num2str(N_beam), '.fig']);
-  saveas(fftxy,[PSFs_savePath,'//fftxy', num2str(N_beam), '.jpg']);
-  %%%%%%%%%%
+% 
+%   %Save FFTXY section, can comment out if don't want this
+  % saveas(fftxy,[PSFs_savePath,'//fftxy', num2str(N_beam), '.fig']);
+  % saveas(fftxy,[PSFs_savePath,'//fftxy', num2str(N_beam), '.jpg']);
+%   %%%%%%%%%%
   close(fftxy)
-
-
+% 
+% 
 end
 fftxy_total = figure('name','FFTXY-total');
 displaySectionDataByImage(abs(FFTxy_total),PSFParameters,'kx','ky','FFT XY Total', -4, 0);
 
 %Save Summed FFTXY of all angles
-saveas(fftxy_total,[PSFs_savePath,'//fftxy-total.fig']);
-saveas(fftxy_total,[PSFs_savePath,'//fftxy-total.jpg']);
+% saveas(fftxy_total,[PSFs_savePath,'//fftxy-total.fig']);
+% saveas(fftxy_total,[PSFs_savePath,'//fftxy-total.jpg']);
 
 fftyz_total = figure('name','FFTYZ-total');
 displaySectionDataByImage(abs(FFTyz_total),PSFParameters,'ky','kz','FFT YZ Total', -4, 0);
 
 %Save Summed FFTYZ of all angles
-saveas(fftyz_total,[PSFs_savePath,'//fftyz-total.fig']);
-saveas(fftyz_total,[PSFs_savePath,'//fftyz-total.jpg']);
+% saveas(fftyz_total,[PSFs_savePath,'//fftyz-total.fig']);
+% saveas(fftyz_total,[PSFs_savePath,'//fftyz-total.jpg']);
 
 
-%Computing Halfmax plot, can comment out below code if don't want it
+%% Computing Halfmax plot, can comment out below code if don't want it
 
 %% Adjust this according to PSF size to take center of a XY slice. EX: 128*128 xy sizes yields 64 and 64.
 X_section = 64;%middle, 1---128
@@ -140,7 +141,7 @@ const = half_pks*ones(zsizePixels*2,1);
 %% Adjust this value manually. Takes all the sampled points that are in the range of:
 %% Half_of_Max-smallNumber < points< Half_of_Max + smallNumber
 %% Then compute and draw Figure based on Min of Z and Max of Z.
-smallNumber = 0.003;
+smallNumber = 0.03;
 
 [~,index]=find(abs(imageSctionYZshow-const)<smallNumber);
 index_r = unique(index(:).');

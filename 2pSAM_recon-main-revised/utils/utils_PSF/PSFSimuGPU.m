@@ -26,7 +26,7 @@ kycord = kxcord;
 [kx, ky] = meshgrid(kxcord, kycord);
 k = sqrt(kx.^2+ky.^2);
 %%%%%%%%%%%%%%%%%%%%%%original  subPupil %%%%%%%%%%%%%%%%%%%%%%%%%%
-%pupil_lowNA = (k< lowNAkMaxPixels);
+% pupil_lowNA = (k< lowNAkMaxPixels);
 
 %%%%%%%%%%%%%%%%%%%%%  TMP 1.05 large subPupil equql to pupil%%%%%%%
 %pupil_lowNA = (k< kMaxPixels);
@@ -35,8 +35,8 @@ k = sqrt(kx.^2+ky.^2);
 % pupil_lowNA = (k< kMaxPixels * 0.25);
 
 %%%%%%%%%%%%%%%%%%  anulus Bessel light %%%%%%%%%%%%%%%%%%%%%%%%
-RLarge = lowNAkMaxPixels*1.75;   %2.0 %2.5 %1.667;
-RSmall = 0.1*RLarge;
+RLarge = lowNAkMaxPixels*3.5;   %2.0 %2.5 %1.667;
+RSmall = 0.8*RLarge;
 pupil_lowNA_Large = (k< RLarge);
 pupil_lowNA_Small = (k > RSmall);
 pupil_lowNA = pupil_lowNA_Small .* pupil_lowNA_Large;

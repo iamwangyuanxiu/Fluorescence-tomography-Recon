@@ -57,10 +57,10 @@ projBackfft = fftForStack(projNowExpand).* FFT3PSFTranspose;clear projNowExpand 
 %     projBack = ifftForStack(projBackFFT);
 
 %% errorBack
-errorBack = (real(projBack./HXguessBack + reg_constant .* regulaTV(Xguess))); % Calculate Error Matric
+errorBack = (real(projBack./(HXguessBack + (reg_constant.*regulaTV(Xguess))))); % Calculate Error Matric
 %% default is total variation, change to 2 norm or 1 norm regularizer.
-%errorBack = (real(projBack./HXguessBack + reg_constant .* Xguess)); 
-%errorBack = (real(projBack./HXguessBack + reg_constant));
+%errorBack = (real(projBack./(HXguessBack + (reg_constant .* Xguess)))); 
+%errorBack = (real(projBack./(HXguessBack + reg_constant)));
 
 %% create largepsf again
 evalin('caller','largepsf = zeros(proj_r,proj_c,psf_s,"single");');

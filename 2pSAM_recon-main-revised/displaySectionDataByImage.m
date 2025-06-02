@@ -93,15 +93,15 @@ end
   fprintf('\n');
   
   %% use original data to map color, the mapping domain(color_limits)can be adjusted
-%   scaleSectionData = sectionData;
-%   color_limits = [dataMin dataMax];
+% scaleSectionData = sectionData;
+% color_limits = [dataMin dataMax];
 
   %% use scale data to map color, the mapping domain(color_limits) can be adjusted,
    %  try [0.5 1] 0r [0,0.5]
   data_Scale = 1.0/(dataMax-dataMin);
   %scaleSectionData = log(sectionData + eps(0));
-  scaleSectionData = data_Scale*(sectionData-dataMin);
-  color_limits = [0, 1];
+  scaleSectionData = log(data_Scale*(sectionData-dataMin));
+  color_limits = [-5, 0];
   %color_limits = [lower_log, upper_log];
 %%
 

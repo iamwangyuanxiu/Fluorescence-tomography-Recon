@@ -1,7 +1,7 @@
 %% Code to Generate Projections given the 3D olume and PSFs.
 
 clc; clear; close all; addpath(genpath('utils'));
-PSFs_Path = 'data//PSFs//default'; %Check if PSF exists before generating new PSF
+PSFs_Path = 'data//PSFs//400_xy_pixels_dz_1'; %Check if PSF exists before generating new PSF
 EI_path = 'data//images';%file path
 %data\sim_results\2pSAM_original_results\recon_fRL_zoom4ca512up1_-30-0.5-30_pupNO_en0_K0bias0_DAO1_EW0.5_mI30_mC0_frames1-13-13
 EI_name = '3d_400um_to_500um_cropped_xp4um.tif';
@@ -12,13 +12,12 @@ resultSave_path = ['results//generate_',datestr(now, 'YYYYmmDD_HHMMSS')];%Save r
 %data\sim_results\2pSAM_original_results\recon_fRL_zoom4ca512up1_-30-0.5-30_pupNO_en0_K0bias0_DAO1_EW0.5_mI30_mC0_frames1-13-13
 
 disp('Loading PSFs...');
-load([PSFs_Path,'//Bessel_0.2NA_0.7_annulus//PSF_mid_zoom6ca128up1psf128_-25-1-25_scanMode2_2-4-8_maxX8.5000Y8.5000biasX0.0Y0.0_pupNO_en0_K0bias0//PSFParameters.mat']);
+load([PSFs_Path,'//2pSAM//PSF_mid_zoom6ca128up1psf128_-25-1-25_scanMode2_2-4-8_maxX4.2426Y6.0000biasX0.0Y0.0_pupNO_en0_K0bias0//PSFParameters.mat']);
 for i = 1:PSFParameters.angleNum
-    load([PSFs_Path,'//Bessel_0.2NA_0.7_annulus//PSF_mid_zoom6ca128up1psf128_-25-1-25_scanMode2_2-4-8_maxX8.5000Y8.5000biasX0.0Y0.0_pupNO_en0_K0bias0////psf_all_',num2str(i),'.mat'],'psf_thisAngle');
+    load([PSFs_Path,'//2pSAM//PSF_mid_zoom6ca128up1psf128_-25-1-25_scanMode2_2-4-8_maxX4.2426Y6.0000biasX0.0Y0.0_pupNO_en0_K0bias0////psf_all_',num2str(i),'.mat'],'psf_thisAngle');
     psfs(:,:,:,i) = psf_thisAngle;
 end
 disp('PSFs loaded');
-
 
 
 % disp('Loading PSFs...');
@@ -57,7 +56,7 @@ disp('Raw data loaded');
 
 
 %% Normalize PSF and data before calculation if norm flag set 1
-norm = 1;
+norm = 0;
 if norm
     disp('Normalizing psfs and data...')
     for psfCount=1:angleNum

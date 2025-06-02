@@ -56,7 +56,7 @@ dispOn = reconOpts.dispOn;
 shiftMap = 0;
 dispMap = 0;
 
-reg_constant = 0; %regularizer, fix type in backward_projector
+reg_constant = 4; %regularizer, fix type in backward_projector
 
 %%%DAO
 DAO = reconOpts.DAO;

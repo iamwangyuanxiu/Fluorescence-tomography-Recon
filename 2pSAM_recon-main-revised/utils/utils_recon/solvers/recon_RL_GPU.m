@@ -86,7 +86,7 @@ shiftMap = 0;
 dispMap = 0;
 
 %% Regularization constants added
-reg_constant = 0; %0.0003; 0.00001 0.005 regularization constant
+reg_constant = 0.0002; %0.0003; 0.00001 0.005 regularization constant
 reg_constant1 = 0; % added small number in divide, can be changed
 
 
@@ -156,9 +156,9 @@ for iterNow = 1:maxIter
             errorEM = projNow./(HXguess + reg_constant1);
             %errorEM(~isfinite(errorEM))=0;
             if ~exist('errorBack','var'); errorBack = zeros(proj_r,proj_c,psf_s,'single'); end
-            errorBack_temp = backwardProj_RL_GPU(squeeze(psf_t(:,:,:,angleNow)),errorEM, 0) ./ ((htf(:,:,:,angleNow) + reg_constant.*regulaTV(Xguess)) * 1/upAnglesNum);
+            %errorBack_temp = backwardProj_RL_GPU(squeeze(psf_t(:,:,:,angleNow)),errorEM, 0) ./ ((htf(:,:,:,angleNow) + reg_constant.*regulaTV(Xguess)) * 1/upAnglesNum);
             %% default is total variation, change to 2 norm or 1 norm regularizer.
-            %errorBack_temp = backwardProj_RL_GPU(squeeze(psf_t(:,:,:,angleNow)),errorEM, 0) ./ ((htf(:,:,:,angleNow) + reg_constant .* Xguess) * 1/upAnglesNum);  
+            errorBack_temp = backwardProj_RL_GPU(squeeze(psf_t(:,:,:,angleNow)),errorEM, 0) ./ ((htf(:,:,:,angleNow) + reg_constant .* Xguess) * 1/upAnglesNum);  
             %errorBack_temp = backwardProj_RL_GPU(squeeze(psf_t(:,:,:,angleNow)),errorEM, 0) ./ ((htf(:,:,:,angleNow) + reg_constant) * 1/upAnglesNum);
             %errorBack_temp(~isfinite(errorBack_temp))=0;
             errorBack = errorBack_temp + errorBack;

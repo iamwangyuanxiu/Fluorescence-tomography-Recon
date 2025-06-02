@@ -32,7 +32,7 @@ PSFParameters.duringGeneration.apertureRadius = PSFParameters.lowNADL * PSFParam
 PSFParameters.duringGeneration.apertureRadius_pixel = PSFParameters.duringGeneration.apertureRadius ./ PSFParameters.duringGeneration.dxy;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%  original pinhole %%%%%%%%%%%%%%%%%%%%%%%%%%
-%rLarge = PSFParameters.duringGeneration.apertureRadius_pixel;
+% rLarge = PSFParameters.duringGeneration.apertureRadius_pixel;
 
 %%%%%%%%%%%%%%%%%%%%%%%%% a large pinhole  = 1.05 NA %%%%%%%%%%%%%%%%%
 rLarge = PSFParameters.duringGeneration.xysize;
